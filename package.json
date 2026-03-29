@@ -6,8 +6,13 @@
     "packages/*"
   ],
   "scripts": {
+    "seed": "npx dotenv -e .env.local -- npx tsx scripts/seed.ts",
     "dev:no-rsc": "npm run dev --workspace=apps/no-rsc",
     "dev:partial-rsc": "npm run dev --workspace=apps/partial-rsc",
     "dev:full-rsc": "npm run dev --workspace=apps/full-rsc"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^11.0.0",
+    "tsx": "^4.21.0"
   }
 }
