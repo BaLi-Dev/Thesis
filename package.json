@@ -1,0 +1,13 @@
+{
+  "name": "rsc-study",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:no-rsc": "npm run dev --workspace=apps/no-rsc",
+    "dev:partial-rsc": "npm run dev --workspace=apps/partial-rsc",
+    "dev:full-rsc": "npm run dev --workspace=apps/full-rsc"
+  }
+}
