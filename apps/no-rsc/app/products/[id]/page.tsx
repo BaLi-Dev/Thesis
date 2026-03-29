@@ -2,17 +2,19 @@
 import { supabase } from "@rsc-study/supabase";
 import { useEffect, useState } from "react";
 import { useCart } from "../../CartContext";
+import { use } from "react";
 
 type Product = { id: number; name: string; price: number; category: string; description: string; image_url: string };
 
-export default function ProductPage({ params }: { params: { id: string } }) {
+export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const [product, setProduct] = useState<Product | null>(null);
   const { add } = useCart();
 
   useEffect(() => {
-    supabase.from("products").select("*").eq("id", params.id).single()
+    supabase.from("products").select("*").eq("id", id).single()
       .then(({ data }) => setProduct(data));
-  }, [params.id]);
+  }, [id]);
 
   if (!product) return <main style={{ padding: 24 }}>Loading...</main>;
 

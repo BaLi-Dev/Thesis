@@ -3,8 +3,9 @@ import AddToCart from "../../AddToCart";
 
 type Product = { id: number; name: string; price: number; category: string; description: string; image_url: string };
 
-export default async function ProductPage({ params }: { params: { id: string } }) {
-  const { data: product } = await supabase.from("products").select("*").eq("id", params.id).single();
+export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const { data: product } = await supabase.from("products").select("*").eq("id", id).single();
   if (!product) return <main style={{ padding: 24 }}>Product not found.</main>;
   const p = product as Product;
 

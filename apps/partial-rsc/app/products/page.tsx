@@ -28,8 +28,8 @@ async function ProductList({ q }: { q: string }) {
   );
 }
 
-export default function ProductsPage({ searchParams }: { searchParams: { q?: string } }) {
-  const q = searchParams.q ?? "";
+export default async function ProductsPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
+  const { q = "" } = await searchParams;
   return (
     <main style={{ padding: 24 }}>
       <h1>Products</h1>

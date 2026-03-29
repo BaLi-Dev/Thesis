@@ -6,8 +6,8 @@ import { Suspense } from "react";
 
 type Product = { id: number; name: string; price: number; category: string; image_url: string };
 
-export default async function ProductsPage({ searchParams }: { searchParams: { q?: string } }) {
-  const q = searchParams.q ?? "";
+export default async function ProductsPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
+  const { q = "" } = await searchParams;
   const query = supabase.from("products").select("*");
   if (q) query.ilike("name", `%${q}%`);
   const { data: products } = await query;
