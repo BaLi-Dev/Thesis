@@ -1,4 +1,5 @@
 import { supabase } from "@rsc-study/supabase";
+import AddToCart from "../AddToCart";
 
 type Product = { id: number; name: string; price: number; category: string; image_url: string };
 
@@ -15,6 +16,7 @@ export default async function ProductsPage() {
             <h3 style={{ margin: "8px 0 4px" }}>{p.name}</h3>
             <p style={{ color: "#666", margin: 0 }}>{p.category}</p>
             <p style={{ fontWeight: "bold" }}>${p.price}</p>
+            <AddToCart id={p.id} name={p.name} price={p.price} />
           </div>
         ))}
       </div>
