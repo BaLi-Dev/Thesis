@@ -2,9 +2,9 @@
 import { createContext, useContext, useState, useEffect } from "react";
 
 type CartItem = { id: number; name: string; price: number; qty: number };
-type CartCtx = { items: CartItem[]; add: (p: CartItem) => void };
+type CartCtx = { items: CartItem[]; add: (p: CartItem) => void; remove: (id: number) => void };
 
-const CartContext = createContext<CartCtx>({ items: [], add: () => {} });
+const CartContext = createContext<CartCtx>({ items: [], add: () => {}, remove: () => {} });
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -25,7 +25,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     });
   }
 
-  return <CartContext.Provider value={{ items, add }}>{children}</CartContext.Provider>;
+  function remove(id: number) {
+    setItems((prev) => {
+      const next = prev.filter((i) => i.id !== id);
+      localStorage.setItem("cart", JSON.stringify(next));
+      return next;
+    });
+  }
+
+  return <CartContext.Provider value={{ items, add, remove }}>{children}</CartContext.Provider>;
 }
 
 export const useCart = () => useContext(CartContext);

@@ -7,10 +7,10 @@ export default function SearchBar() {
 
   return (
     <input
-      placeholder="Search products..."
+      placeholder="Search by name or category..."
       defaultValue={params.get("q") ?? ""}
       onChange={(e) => router.push(`/products?q=${e.target.value}`)}
-      style={{ padding: 8, marginBottom: 16, width: 300, display: "block" }}
+      style={{ padding: "10px 16px", marginBottom: 32, width: 320, display: "block", border: "1px solid #ddd", borderRadius: 8, fontSize: 15 }}
     />
   );
 }
