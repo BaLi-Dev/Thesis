@@ -1,55 +1,46 @@
-"use client";
 import { supabase } from "@rsc-study/supabase";
-import { useEffect, useState, Suspense } from "react";
-import { useCart } from "../CartContext";
-import ProductImage from "./ProductImage";
+import AddToCart from "../AddToCart";
+import SearchBar from "../SearchBar";
 import Link from "next/link";
+import { Suspense } from "react";
 
-type Product = { id: number; name: string; price: number; category: string };
+type Product = { id: number; name: string; price: number; category: string; image_url: string };
 
-export default function ProductsPage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [search, setSearch] = useState("");
-  const { add } = useCart();
+async function ProductGrid({ q }: { q: string }) {
+  const query = supabase.from("products").select("id, name, price, category, image_url");
+  if (q) query.ilike("name", `%${q}%`);
+  const { data: products } = await query;
 
-  useEffect(() => {
-    supabase.from("products").select("id, name, price, category").then(({ data }) => setProducts(data ?? []));
-  }, []);
-
-  const filtered = products.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase()) ||
-    p.category.toLowerCase().includes(search.toLowerCase())
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
+      {(products ?? []).map((p: Product) => (
+        <div key={p.id} style={{ border: "1px solid #ccc", borderRadius: 8, padding: 12 }}>
+          <Link href={`/products/${p.id}`}>
+            {/* Image fetched and rendered server-side */}
+            <img src={p.image_url} alt={p.name} style={{ width: "100%", borderRadius: 4 }} />
+            <h3 style={{ margin: "8px 0 4px" }}>{p.name}</h3>
+          </Link>
+          <p style={{ color: "#666", margin: 0 }}>{p.category}</p>
+          <p style={{ fontWeight: "bold" }}>${p.price}</p>
+          {/* Only the interactive button is a client component */}
+          <AddToCart id={p.id} name={p.name} price={p.price} />
+        </div>
+      ))}
+    </div>
   );
+}
 
+export default async function ProductsPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
+  const { q = "" } = await searchParams;
   return (
     <main style={{ padding: 24 }}>
       <h1>Products</h1>
-      <input
-        placeholder="Search products..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        style={{ padding: 8, marginBottom: 16, width: 300, display: "block" }}
-      />
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
-        {filtered.map((p) => (
-          <div key={p.id} style={{ border: "1px solid #ccc", borderRadius: 8, padding: 12 }}>
-            <Link href={`/products/${p.id}`}>
-              <Suspense fallback={<div style={{ width: "100%", aspectRatio: "1", background: "#eee", borderRadius: 4 }} />}>
-                <ProductImage id={p.id} />
-              </Suspense>
-              <h3 style={{ margin: "8px 0 4px" }}>{p.name}</h3>
-            </Link>
-            <p style={{ color: "#666", margin: 0 }}>{p.category}</p>
-            <p style={{ fontWeight: "bold" }}>${p.price}</p>
-            <button
-              onClick={() => add({ id: p.id, name: p.name, price: p.price, qty: 1 })}
-              style={{ marginTop: 8, width: "100%", padding: "8px 0", cursor: "pointer" }}
-            >
-              Add to cart
-            </button>
-          </div>
-        ))}
-      </div>
+      {/* SearchBar is a client component for interactivity */}
+      <Suspense><SearchBar /></Suspense>
+      {/* ProductGrid is an RSC — renders images server-side */}
+      <Suspense fallback={<p>Loading...</p>}>
+        <ProductGrid q={q} />
+      </Suspense>
     </main>
   );
 }
