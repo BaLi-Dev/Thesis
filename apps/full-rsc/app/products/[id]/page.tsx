@@ -1,8 +1,45 @@
 import { supabase } from "@rsc-study/supabase";
 import AddToCart from "../../AddToCart";
 import Link from "next/link";
+import { Suspense } from "react";
 
 type Product = { id: number; name: string; price: number; category: string; description: string; image_url: string };
+type Review = { id: number; reviewer: string; rating: number; comment: string };
+
+async function Reviews({ productId }: { productId: string }) {
+  const { data: reviews } = await supabase.from("reviews").select("*").eq("product_id", productId);
+  return (
+    <section style={{ marginTop: 48 }}>
+      <h2 style={{ fontSize: 20, marginBottom: 16 }}>Customer Reviews</h2>
+      {(reviews ?? []).map((r: Review) => (
+        <div key={r.id} style={{ borderTop: "1px solid #eee", padding: "16px 0" }}>
+          <div style={{ fontWeight: 600 }}>{r.reviewer} — {"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</div>
+          <p style={{ color: "#555", margin: "4px 0 0" }}>{r.comment}</p>
+        </div>
+      ))}
+    </section>
+  );
+}
+
+async function RelatedProducts({ category, currentId }: { category: string; currentId: string }) {
+  const { data: related } = await supabase.from("products").select("*").eq("category", category).neq("id", currentId).limit(3);
+  return (
+    <section style={{ marginTop: 48 }}>
+      <h2 style={{ fontSize: 20, marginBottom: 16 }}>Related Products</h2>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+        {(related ?? []).map((p: Product) => (
+          <Link key={p.id} href={`/products/${p.id}`} style={{ textDecoration: "none", color: "inherit", border: "1px solid #eee", borderRadius: 8, overflow: "hidden" }}>
+            <img src={p.image_url} alt={p.name} style={{ width: "100%", height: 120, objectFit: "cover" }} />
+            <div style={{ padding: "8px 12px" }}>
+              <div style={{ fontWeight: 600, fontSize: 14 }}>{p.name}</div>
+              <div style={{ color: "#e63946", fontWeight: 700 }}>${p.price.toFixed(2)}</div>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -23,6 +60,12 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           <AddToCart id={p.id} name={p.name} price={p.price} variant="detail" />
         </div>
       </div>
+      <Suspense fallback={<p style={{ color: "#999", marginTop: 48 }}>Loading reviews...</p>}>
+        <Reviews productId={id} />
+      </Suspense>
+      <Suspense fallback={<p style={{ color: "#999", marginTop: 48 }}>Loading related products...</p>}>
+        <RelatedProducts category={p.category} currentId={id} />
+      </Suspense>
     </main>
   );
 }
