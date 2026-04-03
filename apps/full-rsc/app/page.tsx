@@ -1,3 +1,5 @@
+import Spinner from "./Spinner";
+const Loading = () => <div style={{ padding: "32px 0" }}><Spinner size={32} /></div>;
 import { getFeaturedProducts, getAnnouncements } from "@rsc-study/data";
 import Link from "next/link";
 import AddToCart from "./AddToCart";
@@ -46,10 +48,10 @@ export default function Page() {
         <p style={{ fontSize: 20, color: "#aaa", margin: "0 0 32px" }}>Over 10,000 parts for all major brands. Fast delivery, guaranteed fit.</p>
         <Link href="/products" style={{ background: "#e63946", color: "#fff", padding: "14px 36px", borderRadius: 8, textDecoration: "none", fontWeight: 700, fontSize: 18 }}>Shop Now</Link>
       </div>
-      <Suspense fallback={<p style={{ padding: "16px 32px", color: "#999" }}>Loading announcements...</p>}>
+      <Suspense fallback={<Loading />}>
         <Announcements />
       </Suspense>
-      <Suspense fallback={<p style={{ padding: "16px 32px", color: "#999" }}>Loading featured products...</p>}>
+      <Suspense fallback={<Loading />}>
         <FeaturedProducts />
       </Suspense>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24, padding: "0 32px 48px", maxWidth: 900, margin: "0 auto" }}>

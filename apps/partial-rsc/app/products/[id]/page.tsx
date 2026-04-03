@@ -1,4 +1,5 @@
 "use client";
+import Spinner from "../../Spinner";
 import { getProduct, getRelated, getReviews, getSellerInfo, getStockStatus, getPriceHistory } from "@rsc-study/data";
 import { useEffect, useState, use } from "react";
 import { useCart } from "../../CartContext";
@@ -46,7 +47,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               {stock.inStock ? `✓ In stock (${stock.quantity} left) — ${stock.estimatedDelivery}` : "✗ Out of stock"}
               <span style={{ color: "#999", fontWeight: 400, marginLeft: 8 }}>Warehouse: {stock.warehouse}</span>
             </div>
-          ) : <div style={{ marginBottom: 24, color: "#999", fontSize: 14 }}>Checking stock...</div>}
+          ) : <div style={{ marginBottom: 24, color: "#999", fontSize: 14 }}><Spinner size={16} /></div>}
           <button
             onClick={() => add({ id: product.id, name: product.name, price: product.price, qty: 1 })}
             style={{ width: "100%", padding: "14px 0", background: "#e63946", color: "#fff", border: "none", borderRadius: 8, fontSize: 16, fontWeight: 700, cursor: "pointer" }}
@@ -63,7 +64,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             <div><strong>{seller.name}</strong><div style={{ color: "#666", fontSize: 14 }}>{seller.location}</div></div>
             <div><strong>{"★".repeat(Math.floor(seller.rating))}</strong> {seller.rating.toFixed(1)}<div style={{ color: "#666", fontSize: 14 }}>{seller.sales.toLocaleString()} sales</div></div>
           </div>
-        ) : <p style={{ color: "#999" }}>Loading seller info...</p>}
+        ) : <Spinner />}
       </section>
 
       <section style={{ marginTop: 48 }}>
@@ -81,12 +82,12 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               );
             })}
           </div>
-        ) : <p style={{ color: "#999" }}>Loading price history...</p>}
+        ) : <Spinner />}
       </section>
 
       <section style={{ marginTop: 48 }}>
         <h2 style={{ fontSize: 18, marginBottom: 16 }}>Customer Reviews</h2>
-        {reviews.length === 0 ? <p style={{ color: "#999" }}>Loading reviews...</p> : reviews.map((r) => (
+        {reviews.length === 0 ? <Spinner /> : reviews.map((r) => (
           <div key={r.id} style={{ borderTop: "1px solid #eee", padding: "16px 0" }}>
             <div style={{ fontWeight: 600 }}>{r.reviewer} — {"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</div>
             <p style={{ color: "#555", margin: "4px 0 0" }}>{r.comment}</p>
@@ -96,7 +97,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
       <section style={{ marginTop: 48 }}>
         <h2 style={{ fontSize: 18, marginBottom: 16 }}>Related Products</h2>
-        {related.length === 0 ? <p style={{ color: "#999" }}>Loading related products...</p> : (
+        {related.length === 0 ? <Spinner /> : (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
             {related.map((p) => (
               <Link key={p.id} href={`/products/${p.id}`} style={{ textDecoration: "none", color: "inherit", border: "1px solid #eee", borderRadius: 8, overflow: "hidden" }}>

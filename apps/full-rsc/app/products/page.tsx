@@ -1,3 +1,5 @@
+import Spinner from "../Spinner";
+const Loading = () => <div style={{ padding: "32px 0" }}><Spinner size={32} /></div>;
 import { products, getCategoryStats } from "@rsc-study/data";
 import AddToCart from "../AddToCart";
 import SearchBar from "../SearchBar";
@@ -54,7 +56,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
         <p style={{ color: "#666", marginBottom: 24 }}>Quality parts for all major brands</p>
         <Suspense><SearchBar /></Suspense>
         <div style={{ display: "flex", gap: 40, alignItems: "flex-start", marginTop: 24 }}>
-          <Suspense fallback={<div style={{ minWidth: 200, color: "#999" }}>Loading categories...</div>}>
+          <Suspense fallback={<Loading />}>
             <CategorySidebar />
           </Suspense>
           <div style={{ flex: 1 }}>

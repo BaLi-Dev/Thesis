@@ -1,3 +1,5 @@
+import Spinner from "./Spinner";
+const Loading = () => <div style={{ padding: "32px 0" }}><Spinner size={32} /></div>;
 import { getTeamMembers, getSiteStats } from "@rsc-study/data";
 import { Suspense } from "react";
 import type { TeamMember, SiteStats } from "@rsc-study/data";
@@ -51,11 +53,11 @@ export default function AboutPage() {
           <p style={{ color: "#444", lineHeight: 1.7 }}>Every part we sell is OEM-spec or better. If a part doesn't fit, we'll replace it free of charge. Our team is available 7 days a week.</p>
         </div>
       </div>
-      <Suspense fallback={<p style={{ color: "#999" }}>Loading stats...</p>}>
+      <Suspense fallback={<Loading />}>
         <StatsSection />
       </Suspense>
       <h2 style={{ fontSize: 22, marginBottom: 16 }}>Our Team</h2>
-      <Suspense fallback={<p style={{ color: "#999" }}>Loading team...</p>}>
+      <Suspense fallback={<Loading />}>
         <TeamSection />
       </Suspense>
     </main>

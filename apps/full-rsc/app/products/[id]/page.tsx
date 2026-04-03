@@ -2,7 +2,10 @@ import { getProduct, getRelated, getReviews, getSellerInfo, getStockStatus, getP
 import AddToCart from "../../AddToCart";
 import Link from "next/link";
 import { Suspense } from "react";
+import Spinner from "../../Spinner";
 import type { Product, Review, SellerInfo, StockStatus, PriceHistory } from "@rsc-study/data";
+
+const Loading = () => <div style={{ padding: "32px 0" }}><Spinner size={32} /></div>;
 
 async function ProductDetails({ id }: { id: string }) {
   const [product, stock, seller] = await Promise.all([
@@ -97,16 +100,16 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   return (
     <main style={{ maxWidth: 900, margin: "0 auto", padding: "48px 32px" }}>
       <Link href="/products" style={{ color: "#666", textDecoration: "none", fontSize: 14, display: "inline-block", marginBottom: 24 }}>← Back to Products</Link>
-      <Suspense fallback={<p style={{ color: "#999" }}>Loading product...</p>}>
+      <Suspense fallback={<Loading />}>
         <ProductDetails id={id} />
       </Suspense>
-      <Suspense fallback={<p style={{ color: "#999", marginTop: 48 }}>Loading price history...</p>}>
+      <Suspense fallback={<Loading />}>
         <PriceHistorySection productId={id} />
       </Suspense>
-      <Suspense fallback={<p style={{ color: "#999", marginTop: 48 }}>Loading reviews...</p>}>
+      <Suspense fallback={<Loading />}>
         <ReviewsSection productId={id} />
       </Suspense>
-      <Suspense fallback={<p style={{ color: "#999", marginTop: 48 }}>Loading related products...</p>}>
+      <Suspense fallback={<Loading />}>
         <RelatedSection productId={id} />
       </Suspense>
     </main>

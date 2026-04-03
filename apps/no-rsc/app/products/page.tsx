@@ -1,4 +1,5 @@
 "use client";
+import Spinner from "../Spinner";
 import { products, getCategoryStats } from "@rsc-study/data";
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -32,7 +33,7 @@ export default function ProductsPage() {
         <div style={{ display: "flex", gap: 40, alignItems: "flex-start" }}>
           <aside style={{ minWidth: 200 }}>
             <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 12 }}>Categories</h3>
-            {categoryStats.length === 0 ? <p style={{ color: "#999", fontSize: 13 }}>Loading...</p> : categoryStats.map((s) => (
+            {categoryStats.length === 0 ? <Spinner /> : categoryStats.map((s) => (
               <div key={s.category} style={{ padding: "8px 0", borderBottom: "1px solid #f0f0f0" }}>
                 <div style={{ fontWeight: 600, fontSize: 14 }}>{s.category}</div>
                 <div style={{ fontSize: 12, color: "#999" }}>{s.count} parts · avg ${s.avgPrice}</div>

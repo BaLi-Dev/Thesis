@@ -1,4 +1,5 @@
 "use client";
+import Spinner from "../Spinner";
 import { getTeamMembers, getSiteStats } from "@rsc-study/data";
 import { useEffect, useState } from "react";
 import type { TeamMember, SiteStats } from "@rsc-study/data";
@@ -39,11 +40,11 @@ export default function AboutPage() {
             <div style={{ fontSize: 26, fontWeight: 800, color: "#e63946" }}>{s.num}</div>
             <div style={{ color: "#666", marginTop: 4, fontSize: 13 }}>{s.label}</div>
           </div>
-        )) : <p style={{ color: "#999", gridColumn: "1/-1" }}>Loading stats...</p>}
+        )) : <Spinner />}
       </div>
 
       <h2 style={{ fontSize: 22, marginBottom: 16 }}>Our Team</h2>
-      {team.length === 0 ? <p style={{ color: "#999" }}>Loading team...</p> : (
+      {team.length === 0 ? <Spinner /> : (
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           {team.map((m) => (
             <div key={m.name} style={{ padding: 16, border: "1px solid #eee", borderRadius: 10 }}>

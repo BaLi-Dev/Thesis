@@ -1,4 +1,5 @@
 "use client";
+import Spinner from "../Spinner";
 import { getFeaturedProducts, getAnnouncements } from "@rsc-study/data";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -24,7 +25,7 @@ export default function Page() {
 
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 32px 0" }}>
         {announcements.length === 0 ? (
-          <p style={{ color: "#999" }}>Loading announcements...</p>
+          <Spinner />
         ) : announcements.map((a) => (
           <div key={a.id} style={{ padding: "10px 16px", marginBottom: 8, borderRadius: 8, background: a.type === "sale" ? "#fff3cd" : a.type === "new" ? "#d4edda" : "#d1ecf1", fontSize: 14 }}>
             {a.type === "sale" ? "🏷" : a.type === "new" ? "🆕" : "ℹ️"} {a.text}
@@ -35,7 +36,7 @@ export default function Page() {
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px" }}>
         <h2 style={{ fontSize: 24, marginBottom: 20 }}>Featured Products</h2>
         {featured.length === 0 ? (
-          <p style={{ color: "#999" }}>Loading featured products...</p>
+          <Spinner />
         ) : (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 20 }}>
             {featured.map((p) => (
