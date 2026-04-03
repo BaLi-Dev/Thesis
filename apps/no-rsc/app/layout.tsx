@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import Nav from "./Nav";
 import { CartProvider } from "./CartContext";
 
