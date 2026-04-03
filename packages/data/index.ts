@@ -141,3 +141,59 @@ export async function getPriceHistory(productId: number): Promise<PriceHistory[]
     price: parseFloat((base * (0.9 + (i + productId) % 5 * 0.05)).toFixed(2)),
   }));
 }
+
+export type FeaturedProduct = Product & { badge: string };
+export type Announcement = { id: number; text: string; type: "sale" | "info" | "new" };
+export type CategoryStat = { category: string; count: number; avgPrice: number };
+export type TeamMember = { name: string; role: string; since: number };
+export type SiteStats = { totalProducts: number; totalReviews: number; totalCustomers: number; avgRating: number };
+
+export async function getFeaturedProducts(): Promise<FeaturedProduct[]> {
+  await delay(DELAY);
+  const badges = ["Best Seller", "New Arrival", "Deal of the Day"];
+  return products.slice(0, 6).map((p, i) => ({ ...p, badge: badges[i % badges.length] }));
+}
+
+export async function getAnnouncements(): Promise<Announcement[]> {
+  await delay(DELAY);
+  return [
+    { id: 1, text: "Free shipping on orders over €50 this week!", type: "sale" },
+    { id: 2, text: "New brake parts collection just arrived.", type: "new" },
+    { id: 3, text: "Our warehouse in Berlin is now open on Sundays.", type: "info" },
+  ];
+}
+
+export async function getCategoryStats(): Promise<CategoryStat[]> {
+  await delay(DELAY);
+  const map: Record<string, { count: number; total: number }> = {};
+  for (const p of products) {
+    if (!map[p.category]) map[p.category] = { count: 0, total: 0 };
+    map[p.category].count++;
+    map[p.category].total += p.price;
+  }
+  return Object.entries(map).map(([category, { count, total }]) => ({
+    category,
+    count,
+    avgPrice: parseFloat((total / count).toFixed(2)),
+  }));
+}
+
+export async function getTeamMembers(): Promise<TeamMember[]> {
+  await delay(DELAY);
+  return [
+    { name: "Klaus Müller", role: "Founder & CEO", since: 2005 },
+    { name: "Sophie Andersen", role: "Head of Logistics", since: 2009 },
+    { name: "Marco Rossi", role: "Lead Mechanic Advisor", since: 2012 },
+    { name: "Lena Bauer", role: "Customer Support Lead", since: 2015 },
+  ];
+}
+
+export async function getSiteStats(): Promise<SiteStats> {
+  await delay(DELAY);
+  return {
+    totalProducts: products.length,
+    totalReviews: products.length * 4,
+    totalCustomers: 52341,
+    avgRating: 4.6,
+  };
+}
