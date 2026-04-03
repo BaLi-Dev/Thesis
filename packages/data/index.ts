@@ -15,14 +15,14 @@ export type Review = {
   comment: string;
 };
 
-const u = (id: string) => `https://images.unsplash.com/photo-${id}?w=600&h=600&fit=crop&auto=format`;
+const PLACEHOLDER = "https://placehold.co/600x600";
 
-const BRAKES = u("1600712242805-5f78671b24da");
-const ENGINE = u("1486262715619-67b85e0b08d3");
-const FLUIDS = u("1615906655593-ad0386982a0f");
-const SPARK  = u("1609630875171-b1321377ee65");
-const WHEEL  = u("1558618666-fcd25c85cd64");
-const WIPER  = u("1503376780353-7e6692767b70");
+const BRAKES = PLACEHOLDER;
+const ENGINE = PLACEHOLDER;
+const FLUIDS = PLACEHOLDER;
+const SPARK  = PLACEHOLDER;
+const WHEEL  = PLACEHOLDER;
+const WIPER  = PLACEHOLDER;
 
 export const products: Product[] = [
   { id: 1,  name: "Oil Filter",                   price: 8.99,   category: "Filters",     description: "High-quality oil filter compatible with most petrol and diesel engines. Removes contaminants and extends engine life.", image_url: FLUIDS },
