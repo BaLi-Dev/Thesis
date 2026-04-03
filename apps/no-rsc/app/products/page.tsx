@@ -1,19 +1,12 @@
 "use client";
-import { supabase } from "@rsc-study/supabase";
-import { useEffect, useState } from "react";
+import { products } from "@rsc-study/data";
 import { useCart } from "../CartContext";
+import { useState } from "react";
 import Link from "next/link";
 
-type Product = { id: number; name: string; price: number; category: string; image_url: string };
-
 export default function ProductsPage() {
-  const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState("");
   const { add } = useCart();
-
-  useEffect(() => {
-    supabase.from("products").select("*").then(({ data }) => setProducts(data ?? []));
-  }, []);
 
   const filtered = products.filter((p) =>
     p.name.toLowerCase().includes(search.toLowerCase()) ||

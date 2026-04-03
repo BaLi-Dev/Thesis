@@ -8,7 +8,7 @@
     "start": "next start -p 3002"
   },
   "dependencies": {
-    "@rsc-study/supabase": "*",
+    "@rsc-study/data": "*",
     "next": "^15",
     "react": "^19",
     "react-dom": "^19"

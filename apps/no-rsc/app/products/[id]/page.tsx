@@ -1,11 +1,9 @@
 "use client";
-import { supabase } from "@rsc-study/supabase";
+import { getProduct, getRelated, getReviews } from "@rsc-study/data";
 import { useEffect, useState, use } from "react";
 import { useCart } from "../../CartContext";
 import Link from "next/link";
-
-type Product = { id: number; name: string; price: number; category: string; description: string; image_url: string };
-type Review = { id: number; reviewer: string; rating: number; comment: string };
+import type { Product, Review } from "@rsc-study/data";
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -15,14 +13,11 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const { add } = useCart();
 
   useEffect(() => {
-    supabase.from("products").select("*").eq("id", id).single().then(({ data }) => {
-      if (!data) return;
-      setProduct(data);
-      supabase.from("products").select("*").eq("category", data.category).neq("id", id).limit(3)
-        .then(({ data: rel }) => setRelated(rel ?? []));
-      supabase.from("reviews").select("*").eq("product_id", id)
-        .then(({ data: rev }) => setReviews(rev ?? []));
-    });
+    const p = getProduct(Number(id));
+    if (!p) return;
+    setProduct(p);
+    setRelated(getRelated(p.category, p.id));
+    setReviews(getReviews(p.id));
   }, [id]);
 
   if (!product) return <main style={{ padding: "48px 32px", textAlign: "center", color: "#666" }}>Loading...</main>;
@@ -45,32 +40,28 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           </button>
         </div>
       </div>
-
       <section style={{ marginTop: 48 }}>
         <h2 style={{ fontSize: 20, marginBottom: 16 }}>Customer Reviews</h2>
-        {reviews.length === 0 ? <p style={{ color: "#999" }}>Loading reviews...</p> : reviews.map((r) => (
+        {reviews.map((r) => (
           <div key={r.id} style={{ borderTop: "1px solid #eee", padding: "16px 0" }}>
             <div style={{ fontWeight: 600 }}>{r.reviewer} — {"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</div>
             <p style={{ color: "#555", margin: "4px 0 0" }}>{r.comment}</p>
           </div>
         ))}
       </section>
-
       <section style={{ marginTop: 48 }}>
         <h2 style={{ fontSize: 20, marginBottom: 16 }}>Related Products</h2>
-        {related.length === 0 ? <p style={{ color: "#999" }}>Loading related products...</p> : (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
-            {related.map((p) => (
-              <Link key={p.id} href={`/products/${p.id}`} style={{ textDecoration: "none", color: "inherit", border: "1px solid #eee", borderRadius: 8, overflow: "hidden" }}>
-                <img src={p.image_url} alt={p.name} style={{ width: "100%", height: 120, objectFit: "cover" }} />
-                <div style={{ padding: "8px 12px" }}>
-                  <div style={{ fontWeight: 600, fontSize: 14 }}>{p.name}</div>
-                  <div style={{ color: "#e63946", fontWeight: 700 }}>${p.price.toFixed(2)}</div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+          {related.map((p) => (
+            <Link key={p.id} href={`/products/${p.id}`} style={{ textDecoration: "none", color: "inherit", border: "1px solid #eee", borderRadius: 8, overflow: "hidden" }}>
+              <img src={p.image_url} alt={p.name} style={{ width: "100%", height: 120, objectFit: "cover" }} />
+              <div style={{ padding: "8px 12px" }}>
+                <div style={{ fontWeight: 600, fontSize: 14 }}>{p.name}</div>
+                <div style={{ color: "#e63946", fontWeight: 700 }}>${p.price.toFixed(2)}</div>
+              </div>
+            </Link>
+          ))}
+        </div>
       </section>
     </main>
   );

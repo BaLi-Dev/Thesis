@@ -1,19 +1,18 @@
-import { supabase } from "@rsc-study/supabase";
+import { products } from "@rsc-study/data";
 import AddToCart from "../AddToCart";
 import SearchBar from "../SearchBar";
 import Link from "next/link";
 import { Suspense } from "react";
+import type { Product } from "@rsc-study/data";
 
-type Product = { id: number; name: string; price: number; category: string; image_url: string };
-
-async function ProductGrid({ q }: { q: string }) {
-  const query = supabase.from("products").select("*");
-  if (q) query.ilike("name", `%${q}%`);
-  const { data: products } = await query;
+function ProductGrid({ q }: { q: string }) {
+  const filtered = q
+    ? products.filter((p) => p.name.toLowerCase().includes(q.toLowerCase()) || p.category.toLowerCase().includes(q.toLowerCase()))
+    : products;
 
   return (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 24 }}>
-      {(products ?? []).map((p: Product) => (
+      {filtered.map((p: Product) => (
         <div key={p.id} style={{ border: "1px solid #eee", borderRadius: 12, overflow: "hidden", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
           <Link href={`/products/${p.id}`}>
             <img src={p.image_url} alt={p.name} style={{ width: "100%", height: 180, objectFit: "cover", display: "block" }} />
@@ -40,9 +39,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
         <h1 style={{ fontSize: 32, marginBottom: 8 }}>Products</h1>
         <p style={{ color: "#666", marginBottom: 24 }}>Quality parts for all major brands</p>
         <Suspense><SearchBar /></Suspense>
-        <Suspense fallback={<p style={{ color: "#666" }}>Loading products...</p>}>
-          <ProductGrid q={q} />
-        </Suspense>
+        <ProductGrid q={q} />
       </div>
     </main>
   );
