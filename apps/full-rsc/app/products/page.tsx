@@ -23,7 +23,6 @@ function ProductGrid({ q }: { q: string }) {
               <h3 style={{ margin: "0 0 8px", fontSize: 15, fontWeight: 600 }}>{p.name}</h3>
             </Link>
             <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 12 }}>${p.price.toFixed(2)}</div>
-            <AddToCart id={p.id} name={p.name} price={p.price} />
           </div>
         </div>
       ))}

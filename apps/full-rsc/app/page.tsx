@@ -29,8 +29,7 @@ async function FeaturedProducts() {
             <Link href={`/products/${p.id}`}><img src={p.image_url} alt={p.name} style={{ width: "100%", height: 140, objectFit: "cover" }} /></Link>
             <div style={{ padding: "10px 12px 12px" }}>
               <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>{p.name}</div>
-              <div style={{ fontWeight: 800, marginBottom: 8 }}>${p.price.toFixed(2)}</div>
-              <AddToCart id={p.id} name={p.name} price={p.price} />
+              <div style={{ fontWeight: 800 }}>${p.price.toFixed(2)}</div>
             </div>
           </div>
         ))}
