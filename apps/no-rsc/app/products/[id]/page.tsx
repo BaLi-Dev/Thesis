@@ -21,11 +21,19 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     getProduct(numId).then((p) => {
       if (!p) return;
       setProduct(p);
-      getRelated(p.category, p.id).then(setRelated);
-      getReviews(p.id).then(setReviews);
-      getSellerInfo(p.id).then(setSeller);
-      getStockStatus(p.id).then(setStock);
-      getPriceHistory(p.id).then(setPriceHistory);
+      Promise.all([
+        getRelated(p.category, p.id),
+        getReviews(p.id),
+        getSellerInfo(p.id),
+        getStockStatus(p.id),
+        getPriceHistory(p.id),
+      ]).then(([rel, rev, sel, st, ph]) => {
+        setRelated(rel);
+        setReviews(rev);
+        setSeller(sel);
+        setStock(st);
+        setPriceHistory(ph);
+      });
     });
   }, [id]);
 

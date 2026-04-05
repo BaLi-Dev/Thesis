@@ -6,13 +6,28 @@ import Link from "next/link";
 import AddToCart from "../AddToCart";
 import type { CategoryStat } from "@rsc-study/data";
 
-export default function ProductsPage() {
-  const [search, setSearch] = useState("");
+function CategorySidebar() {
   const [categoryStats, setCategoryStats] = useState<CategoryStat[]>([]);
 
   useEffect(() => {
     getCategoryStats().then(setCategoryStats);
   }, []);
+
+  return (
+    <aside style={{ minWidth: 200 }}>
+      <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 12 }}>Categories</h3>
+      {categoryStats.length === 0 ? <Spinner /> : categoryStats.map((s) => (
+        <div key={s.category} style={{ padding: "8px 0", borderBottom: "1px solid #f0f0f0" }}>
+          <div style={{ fontWeight: 600, fontSize: 14 }}>{s.category}</div>
+          <div style={{ fontSize: 12, color: "#999" }}>{s.count} parts · avg ${s.avgPrice}</div>
+        </div>
+      ))}
+    </aside>
+  );
+}
+
+export default function ProductsPage() {
+  const [search, setSearch] = useState("");
 
   const filtered = products.filter((p) =>
     p.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -31,15 +46,7 @@ export default function ProductsPage() {
           style={{ padding: "10px 16px", marginBottom: 24, width: 320, display: "block", border: "1px solid #ddd", borderRadius: 8, fontSize: 15 }}
         />
         <div style={{ display: "flex", gap: 40, alignItems: "flex-start" }}>
-          <aside style={{ minWidth: 200 }}>
-            <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 12 }}>Categories</h3>
-            {categoryStats.length === 0 ? <Spinner /> : categoryStats.map((s) => (
-              <div key={s.category} style={{ padding: "8px 0", borderBottom: "1px solid #f0f0f0" }}>
-                <div style={{ fontWeight: 600, fontSize: 14 }}>{s.category}</div>
-                <div style={{ fontSize: 12, color: "#999" }}>{s.count} parts · avg ${s.avgPrice}</div>
-              </div>
-            ))}
-          </aside>
+          <CategorySidebar />
           <div style={{ flex: 1, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 24 }}>
             {filtered.map((p) => (
               <div key={p.id} style={{ border: "1px solid #eee", borderRadius: 12, overflow: "hidden", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
