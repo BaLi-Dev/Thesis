@@ -92,7 +92,7 @@ export const reviews: Review[] = products.flatMap((p) =>
 );
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
-const DELAY = 300;
+const DELAY = 1000;
 
 export async function getProduct(id: number): Promise<Product | null> {
   await delay(DELAY);
@@ -196,4 +196,70 @@ export async function getSiteStats(): Promise<SiteStats> {
     totalCustomers: 52341,
     avgRating: 4.6,
   };
+}
+
+export type Deal = { id: number; productId: number; name: string; originalPrice: number; salePrice: number; endsIn: string };
+export type Brand = { id: number; name: string; country: string; partCount: number };
+export type PromoBanner = { id: number; text: string; code: string; discount: string };
+export type CompatibleVehicle = { make: string; model: string; years: string };
+export type WarrantyInfo = { duration: string; coverage: string; provider: string };
+
+export async function getDeals(): Promise<Deal[]> {
+  await delay(DELAY);
+  return [
+    { id: 1, productId: 5,  name: "Brake Pads (Front)", originalPrice: 29.99, salePrice: 19.99, endsIn: "2h 14m" },
+    { id: 2, productId: 10, name: "Spark Plugs (x4)",   originalPrice: 18.99, salePrice: 12.99, endsIn: "5h 02m" },
+    { id: 3, productId: 16, name: "Timing Belt Kit",    originalPrice: 59.99, salePrice: 39.99, endsIn: "11h 45m" },
+    { id: 4, productId: 28, name: "Battery 60Ah",       originalPrice: 89.99, salePrice: 64.99, endsIn: "23h 59m" },
+  ];
+}
+
+export async function getBrands(): Promise<Brand[]> {
+  await delay(DELAY);
+  return [
+    { id: 1, name: "Bosch",     country: "DE", partCount: 1240 },
+    { id: 2, name: "Valeo",     country: "FR", partCount: 870 },
+    { id: 3, name: "Febi",      country: "DE", partCount: 650 },
+    { id: 4, name: "Sachs",     country: "DE", partCount: 430 },
+    { id: 5, name: "NGK",       country: "JP", partCount: 390 },
+    { id: 6, name: "Brembo",    country: "IT", partCount: 310 },
+  ];
+}
+
+export async function getPromoBanner(): Promise<PromoBanner> {
+  await delay(DELAY);
+  return { id: 1, text: "Free shipping on all orders over €50 — this week only", code: "FREESHIP50", discount: "Free shipping" };
+}
+
+export async function getCompatibleVehicles(productId: number): Promise<CompatibleVehicle[]> {
+  await delay(DELAY);
+  const sets: CompatibleVehicle[][] = [
+    [
+      { make: "BMW",       model: "3 Series (E90/E91)",  years: "2005–2012" },
+      { make: "BMW",       model: "5 Series (E60/E61)",  years: "2003–2010" },
+      { make: "Audi",      model: "A4 (B7/B8)",          years: "2004–2012" },
+      { make: "Audi",      model: "A6 (C6)",             years: "2004–2011" },
+    ],
+    [
+      { make: "Ford",      model: "Focus Mk2/Mk3",       years: "2004–2015" },
+      { make: "Ford",      model: "Mondeo Mk4",          years: "2007–2014" },
+      { make: "Vauxhall",  model: "Astra H/J",           years: "2004–2015" },
+    ],
+    [
+      { make: "Toyota",    model: "Corolla (E120/E150)",  years: "2001–2013" },
+      { make: "Toyota",    model: "Avensis (T250/T270)",  years: "2003–2015" },
+      { make: "Honda",     model: "Civic Mk7/Mk8",        years: "2001–2011" },
+    ],
+  ];
+  return sets[productId % sets.length];
+}
+
+export async function getWarrantyInfo(productId: number): Promise<WarrantyInfo> {
+  await delay(DELAY);
+  const warranties: WarrantyInfo[] = [
+    { duration: "2 years",  coverage: "Manufacturing defects and material faults", provider: "AutoParts EU Warranty" },
+    { duration: "1 year",   coverage: "Manufacturing defects only",                provider: "Supplier Direct Warranty" },
+    { duration: "3 years",  coverage: "Full parts and labour guarantee",            provider: "Premium Cover Plan" },
+  ];
+  return warranties[productId % warranties.length];
 }

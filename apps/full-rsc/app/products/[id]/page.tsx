@@ -1,9 +1,9 @@
-import { getProduct, getRelated, getReviews, getSellerInfo, getStockStatus, getPriceHistory } from "@rsc-study/data";
+import { getProduct, getRelated, getReviews, getSellerInfo, getStockStatus, getPriceHistory, getCompatibleVehicles, getWarrantyInfo } from "@rsc-study/data";
 import AddToCart from "../../AddToCart";
 import Link from "next/link";
 import { Suspense } from "react";
 import Spinner from "../../Spinner";
-import type { Product, Review, SellerInfo, StockStatus, PriceHistory } from "@rsc-study/data";
+import type { Product, Review, SellerInfo, StockStatus, PriceHistory, CompatibleVehicle, WarrantyInfo } from "@rsc-study/data";
 
 const Loading = () => <div style={{ padding: "32px 0" }}><Spinner size={32} /></div>;
 
@@ -76,6 +76,37 @@ async function RelatedSection({ productId }: { productId: string }) {
   );
 }
 
+async function CompatibleVehiclesSection({ productId }: { productId: string }) {
+  const vehicles = await getCompatibleVehicles(Number(productId)) as CompatibleVehicle[];
+  return (
+    <section style={{ marginTop: 48 }}>
+      <h2 style={{ fontSize: 18, marginBottom: 16 }}>Compatible Vehicles</h2>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 12 }}>
+        {vehicles.map((v, i) => (
+          <div key={i} style={{ border: "1px solid #eee", borderRadius: 8, padding: "10px 14px" }}>
+            <div style={{ fontWeight: 600, fontSize: 14 }}>{v.make} {v.model}</div>
+            <div style={{ fontSize: 12, color: "#999", marginTop: 2 }}>{v.years}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+async function WarrantySection({ productId }: { productId: string }) {
+  const warranty = await getWarrantyInfo(Number(productId)) as WarrantyInfo;
+  return (
+    <section style={{ marginTop: 48, padding: 24, background: "#f0faf4", borderRadius: 12 }}>
+      <h2 style={{ fontSize: 18, marginBottom: 12 }}>Warranty</h2>
+      <div style={{ display: "flex", gap: 32, flexWrap: "wrap" }}>
+        <div><div style={{ fontSize: 13, color: "#999" }}>Duration</div><div style={{ fontWeight: 600 }}>{warranty.duration}</div></div>
+        <div><div style={{ fontSize: 13, color: "#999" }}>Coverage</div><div style={{ fontWeight: 600 }}>{warranty.coverage}</div></div>
+        <div><div style={{ fontSize: 13, color: "#999" }}>Provider</div><div style={{ fontWeight: 600 }}>{warranty.provider}</div></div>
+      </div>
+    </section>
+  );
+}
+
 async function PriceHistorySection({ productId }: { productId: string }) {
   const history = await getPriceHistory(Number(productId)) as PriceHistory[];
   const max = Math.max(...history.map((h) => h.price));
@@ -105,6 +136,12 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
       </Suspense>
       <Suspense fallback={<Loading />}>
         <PriceHistorySection productId={id} />
+      </Suspense>
+      <Suspense fallback={<Loading />}>
+        <CompatibleVehiclesSection productId={id} />
+      </Suspense>
+      <Suspense fallback={<Loading />}>
+        <WarrantySection productId={id} />
       </Suspense>
       <Suspense fallback={<Loading />}>
         <ReviewsSection productId={id} />

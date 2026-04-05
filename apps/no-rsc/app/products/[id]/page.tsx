@@ -1,10 +1,10 @@
 "use client";
 import Spinner from "../../Spinner";
-import { getProduct, getRelated, getReviews, getSellerInfo, getStockStatus, getPriceHistory } from "@rsc-study/data";
+import { getProduct, getRelated, getReviews, getSellerInfo, getStockStatus, getPriceHistory, getCompatibleVehicles, getWarrantyInfo } from "@rsc-study/data";
 import { useEffect, useState, use } from "react";
 import { useCart } from "../../CartContext";
 import Link from "next/link";
-import type { Product, Review, SellerInfo, StockStatus, PriceHistory } from "@rsc-study/data";
+import type { Product, Review, SellerInfo, StockStatus, PriceHistory, CompatibleVehicle, WarrantyInfo } from "@rsc-study/data";
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -14,6 +14,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const [seller, setSeller] = useState<SellerInfo | null>(null);
   const [stock, setStock] = useState<StockStatus | null>(null);
   const [priceHistory, setPriceHistory] = useState<PriceHistory[]>([]);
+  const [compatibleVehicles, setCompatibleVehicles] = useState<CompatibleVehicle[]>([]);
+  const [warranty, setWarranty] = useState<WarrantyInfo | null>(null);
   const { add } = useCart();
 
   useEffect(() => {
@@ -27,12 +29,16 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         getSellerInfo(p.id),
         getStockStatus(p.id),
         getPriceHistory(p.id),
-      ]).then(([rel, rev, sel, st, ph]) => {
+        getCompatibleVehicles(p.id),
+        getWarrantyInfo(p.id),
+      ]).then(([rel, rev, sel, st, ph, cv, wi]) => {
         setRelated(rel);
         setReviews(rev);
         setSeller(sel);
         setStock(st);
         setPriceHistory(ph);
+        setCompatibleVehicles(cv);
+        setWarranty(wi);
       });
     });
   }, [id]);
@@ -91,6 +97,31 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             })}
           </div>
         ) : <Spinner />}
+      </section>
+
+      <section style={{ marginTop: 48 }}>
+        <h2 style={{ fontSize: 18, marginBottom: 16 }}>Compatible Vehicles</h2>
+        {compatibleVehicles.length === 0 ? <Spinner /> : (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 12 }}>
+            {compatibleVehicles.map((v, i) => (
+              <div key={i} style={{ border: "1px solid #eee", borderRadius: 8, padding: "10px 14px" }}>
+                <div style={{ fontWeight: 600, fontSize: 14 }}>{v.make} {v.model}</div>
+                <div style={{ fontSize: 12, color: "#999", marginTop: 2 }}>{v.years}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section style={{ marginTop: 48, padding: 24, background: "#f0faf4", borderRadius: 12 }}>
+        <h2 style={{ fontSize: 18, marginBottom: 12 }}>Warranty</h2>
+        {!warranty ? <Spinner /> : (
+          <div style={{ display: "flex", gap: 32, flexWrap: "wrap" }}>
+            <div><div style={{ fontSize: 13, color: "#999" }}>Duration</div><div style={{ fontWeight: 600 }}>{warranty.duration}</div></div>
+            <div><div style={{ fontSize: 13, color: "#999" }}>Coverage</div><div style={{ fontWeight: 600 }}>{warranty.coverage}</div></div>
+            <div><div style={{ fontSize: 13, color: "#999" }}>Provider</div><div style={{ fontWeight: 600 }}>{warranty.provider}</div></div>
+          </div>
+        )}
       </section>
 
       <section style={{ marginTop: 48 }}>

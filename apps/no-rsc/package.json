@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@rsc-study/data": "*",
-    "next": "^15",
+    "next": "15.2.4",
     "react": "^19",
     "react-dom": "^19"
   },

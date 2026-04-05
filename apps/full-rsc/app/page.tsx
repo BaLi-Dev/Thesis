@@ -1,10 +1,9 @@
 import Spinner from "./Spinner";
 const Loading = () => <div style={{ padding: "32px 0" }}><Spinner size={32} /></div>;
-import { getFeaturedProducts, getAnnouncements } from "@rsc-study/data";
+import { getFeaturedProducts, getAnnouncements, getDeals, getBrands } from "@rsc-study/data";
 import Link from "next/link";
-import AddToCart from "./AddToCart";
 import { Suspense } from "react";
-import type { FeaturedProduct, Announcement } from "@rsc-study/data";
+import type { FeaturedProduct, Announcement, Deal, Brand } from "@rsc-study/data";
 
 async function Announcements() {
   const announcements = await getAnnouncements() as Announcement[];
@@ -40,6 +39,44 @@ async function FeaturedProducts() {
   );
 }
 
+async function TodaysDeals() {
+  const deals = await getDeals() as Deal[];
+  return (
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 32px 32px" }}>
+      <h2 style={{ fontSize: 24, marginBottom: 20 }}>Today's Deals</h2>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 16 }}>
+        {deals.map((d) => (
+          <div key={d.id} style={{ border: "1px solid #fde8e8", borderRadius: 12, padding: 16, background: "#fff9f9" }}>
+            <div style={{ fontSize: 12, color: "#e63946", fontWeight: 700, marginBottom: 4 }}>⏱ Ends in {d.endsIn}</div>
+            <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 8 }}>{d.name}</div>
+            <div style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
+              <span style={{ fontWeight: 800, fontSize: 18, color: "#e63946" }}>${d.salePrice.toFixed(2)}</span>
+              <span style={{ fontSize: 13, color: "#999", textDecoration: "line-through" }}>${d.originalPrice.toFixed(2)}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+async function BrandsSection() {
+  const brands = await getBrands() as Brand[];
+  return (
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 32px 48px" }}>
+      <h2 style={{ fontSize: 24, marginBottom: 20 }}>Shop by Brand</h2>
+      <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+        {brands.map((b) => (
+          <div key={b.id} style={{ border: "1px solid #eee", borderRadius: 10, padding: "12px 20px", textAlign: "center", minWidth: 120 }}>
+            <div style={{ fontWeight: 700, fontSize: 16 }}>{b.name}</div>
+            <div style={{ fontSize: 12, color: "#999", marginTop: 4 }}>{b.partCount} parts</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Page() {
   return (
     <main>
@@ -53,6 +90,12 @@ export default function Page() {
       </Suspense>
       <Suspense fallback={<Loading />}>
         <FeaturedProducts />
+      </Suspense>
+      <Suspense fallback={<Loading />}>
+        <TodaysDeals />
+      </Suspense>
+      <Suspense fallback={<Loading />}>
+        <BrandsSection />
       </Suspense>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24, padding: "0 32px 48px", maxWidth: 900, margin: "0 auto" }}>
         {[
