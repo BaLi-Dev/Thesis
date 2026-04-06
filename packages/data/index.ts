@@ -92,7 +92,7 @@ export const reviews: Review[] = products.flatMap((p) =>
 );
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
-const DELAY = 1000;
+const DELAY = 0;
 
 export async function getProduct(id: number): Promise<Product | null> {
   await delay(DELAY);
