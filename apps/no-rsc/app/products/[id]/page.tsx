@@ -2,7 +2,7 @@
 import Spinner from "../../Spinner";
 import { getProduct, getRelated, getReviews, getSellerInfo, getStockStatus, getPriceHistory, getCompatibleVehicles, getWarrantyInfo } from "@rsc-study/data";
 import { useEffect, useState, use } from "react";
-import { useCart } from "../../CartContext";
+import AddToCart from "../../AddToCart";
 import Link from "next/link";
 import type { Product, Review, SellerInfo, StockStatus, PriceHistory, CompatibleVehicle, WarrantyInfo } from "@rsc-study/data";
 
@@ -16,7 +16,6 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const [priceHistory, setPriceHistory] = useState<PriceHistory[]>([]);
   const [compatibleVehicles, setCompatibleVehicles] = useState<CompatibleVehicle[]>([]);
   const [warranty, setWarranty] = useState<WarrantyInfo | null>(null);
-  const { add } = useCart();
 
   useEffect(() => {
     const numId = Number(id);
@@ -62,12 +61,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               <span style={{ color: "#999", fontWeight: 400, marginLeft: 8 }}>Warehouse: {stock.warehouse}</span>
             </div>
           ) : <div style={{ marginBottom: 24, color: "#999", fontSize: 14 }}><Spinner size={16} /></div>}
-          <button
-            onClick={() => add({ id: product.id, name: product.name, price: product.price, qty: 1 })}
-            style={{ width: "100%", padding: "14px 0", background: "#e63946", color: "#fff", border: "none", borderRadius: 8, fontSize: 16, fontWeight: 700, cursor: "pointer" }}
-          >
-            Add to Cart
-          </button>
+          <AddToCart id={product.id} name={product.name} price={product.price} variant="detail" />
         </div>
       </div>
 

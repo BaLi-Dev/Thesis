@@ -53,7 +53,7 @@ export default function ProductsPage() {
     <main style={{ padding: "32px" }}>
       <div style={{ maxWidth: 1300, margin: "0 auto" }}>
         <h1 style={{ fontSize: 32, marginBottom: 8 }}>Products</h1>
-        <p style={{ color: "#666", marginBottom: 24 }}>{filtered.length} parts available</p>
+        <p style={{ color: "#666", marginBottom: 24 }}>Quality parts for all major brands</p>
         <PromoBannerSection />
         <input
           placeholder="Search by name or category..."
