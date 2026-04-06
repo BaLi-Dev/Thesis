@@ -1,4 +1,4 @@
-import Spinner from "./Spinner";
+import Spinner from "../Spinner";
 const Loading = () => <div style={{ padding: "32px 0" }}><Spinner size={32} /></div>;
 import { getTeamMembers, getSiteStats } from "@rsc-study/data";
 import { Suspense } from "react";
