@@ -2,5 +2,5 @@ node_modules
 .next
 .env.local
 venv/
-scripts/lighthouse-results/
+# scripts/lighthouse-results/
 C:\\Users\\*
